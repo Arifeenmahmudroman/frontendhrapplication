@@ -1,20 +1,21 @@
 <!-- <p>employee works!</p> -->
 
 <!-- src/app/components/employee/employee.component.html -->
+<!--
 <div class="container">
   <h2>Employee Management</h2>
 
-  <!-- Message display -->
+  &lt;!&ndash; Message display &ndash;&gt;
   <div class="alert" *ngIf="message">{{message}}</div>
 
-  <!-- File Import -->
+  &lt;!&ndash; File Import &ndash;&gt;
   <div class="import-section">
     <h3>Import Employees (XML)</h3>
     <input type="file" (change)="onFileSelected($event)" accept=".xml">
     <button (click)="importFile()" [disabled]="!selectedFile">Import</button>
   </div>
 
-  <!-- Employee List -->
+  &lt;!&ndash; Employee List &ndash;&gt;
   <h3>Employee List</h3>
   <table>
     <thead>
@@ -43,6 +44,110 @@
           <button (click)="deleteEmployee(employee.id)">Delete</button>
         </td>
       </tr>
+    </tbody>
+  </table>
+
+  &lt;!&ndash; Update Form &ndash;&gt;
+  <div class="update-section" *ngIf="selectedEmployee.id">
+    <h3>Update Employee</h3>
+    <form>
+      <input [(ngModel)]="selectedEmployee.firstname" name="firstname" placeholder="First Name">
+      <input [(ngModel)]="selectedEmployee.lastname" name="lastname" placeholder="Last Name">
+      <input [(ngModel)]="selectedEmployee.title" name="title" placeholder="Title">
+      <input [(ngModel)]="selectedEmployee.division" name="division" placeholder="Division">
+      <input [(ngModel)]="selectedEmployee.building" name="building" placeholder="Building">
+      <input [(ngModel)]="selectedEmployee.room" name="room" placeholder="Room">
+      <button type="button" (click)="updateEmployee()">Update</button>
+      <button type="button" (click)="resetForm()">Cancel</button>
+    </form>
+  </div>
+</div>-->
+
+
+<!-- src/app/components/employee/employee.component.html -->
+<div class="container">
+  <h2>Employee Management</h2>
+
+  <!-- Message display -->
+  <div class="alert" *ngIf="message">{{message}}</div>
+
+  <!-- Search by Employee ID -->
+  <div class="search-section">
+    <h3>Search Employee by ID</h3>
+    <input type="number" [(ngModel)]="searchId" placeholder="Enter Employee ID">
+    <button (click)="searchEmployee()">Search</button>
+  </div>
+
+  <!-- Search Result -->
+  <div class="search-result" *ngIf="searchedEmployee">
+    <h3>Search Result</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Title</th>
+        <th>Division</th>
+        <th>Building</th>
+        <th>Room</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{searchedEmployee.id}}</td>
+        <td>{{searchedEmployee.firstname}}</td>
+        <td>{{searchedEmployee.lastname}}</td>
+        <td>{{searchedEmployee.title}}</td>
+        <td>{{searchedEmployee.division}}</td>
+        <td>{{searchedEmployee.building}}</td>
+        <td>{{searchedEmployee.room}}</td>
+        <td>
+          <button (click)="selectEmployee(searchedEmployee)">Edit</button>
+          <button (click)="deleteEmployee(searchedEmployee.id)">Delete</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- File Import -->
+  <div class="import-section">
+    <h3>Import Employees (XML)</h3>
+    <input type="file" (change)="onFileSelected($event)" accept=".xml">
+    <button (click)="importFile()" [disabled]="!selectedFile">Import</button>
+  </div>
+
+  <!-- Employee List -->
+  <h3>Employee List</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Title</th>
+      <th>Division</th>
+      <th>Building</th>
+      <th>Room</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let employee of employees">
+      <td>{{employee.id}}</td>
+      <td>{{employee.firstname}}</td>
+      <td>{{employee.lastname}}</td>
+      <td>{{employee.title}}</td>
+      <td>{{employee.division}}</td>
+      <td>{{employee.building}}</td>
+      <td>{{employee.room}}</td>
+      <td>
+        <button (click)="selectEmployee(employee)">Edit</button>
+        <button (click)="deleteEmployee(employee.id)">Delete</button>
+      </td>
+    </tr>
     </tbody>
   </table>
 

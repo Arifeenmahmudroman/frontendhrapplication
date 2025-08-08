@@ -16,6 +16,7 @@ import { EmployeeService } from '../../services/employee.service';
 import { Employee } from '../../models/Employee.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-employee',
@@ -37,6 +38,9 @@ export class EmployeeComponent implements OnInit {
   };
   selectedFile: File | null = null;
   message: string = '';
+
+  searchId: number | null = null; // For search input
+  searchedEmployee: Employee | null = null; // To store search result
 
   constructor(private employeeService: EmployeeService) {}
 
@@ -87,12 +91,45 @@ export class EmployeeComponent implements OnInit {
     if (this.selectedFile) {
       this.employeeService.importXmlFile(this.selectedFile).subscribe({
         next: (response) => {
+          this.message = 'XML file imported successfully! Page will reload in 2 seconds.';
           this.message = response;
           this.loadEmployees();
           this.selectedFile = null;
+          setTimeout(() => {
+            window.location.reload(); // Reload the page
+          }, 2000);
         },
-        error: () => this.message = 'Error importing file'
+        // error: () => this.message = 'Error importing file'
+        error: () => {
+          this.message = 'Error importing XML file';
+          this.selectedFile = null;
+        }
       });
+    }
+    else {
+      this.message = 'Please select an XML file to import';
+    }
+  }
+  // New search method
+  searchEmployee(): void {
+    if (this.searchId) {
+      this.employeeService.getEmployee(this.searchId).subscribe({
+        next: (employee) => {
+          this.searchedEmployee = employee;
+          this.message = '';
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 404) {
+            this.message = `Employee with ID ${this.searchId} not found`;
+          } else {
+            this.message = 'Error searching for employee';
+          }
+          this.searchedEmployee = null;
+        }
+      });
+    } else {
+      this.message = 'Please enter a valid Employee ID';
+      this.searchedEmployee = null;
     }
   }
 
@@ -106,5 +143,7 @@ export class EmployeeComponent implements OnInit {
       building: '',
       room: ''
     };
+    this.searchedEmployee = null; // Clear search result
+    this.searchId = null; // Clear search input
   }
 }
